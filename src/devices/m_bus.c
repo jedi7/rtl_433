@@ -324,7 +324,12 @@ static int m_bus_decode_records(data_t *data, const uint8_t *b, uint8_t dif_codi
     int ret = consumed_bytes[dif_coding&0x07];
     int state;
     int32_t val = 0;
-
+    int second = 0;
+    int minute = 0;
+    int hour = 0;
+    int day = 0;
+    int month = 0;
+    int year = 0;
 
     // Note: there are also other formats, which should be added when needed
     switch (dif_coding) {
@@ -427,6 +432,20 @@ static int m_bus_decode_records(data_t *data, const uint8_t *b, uint8_t dif_codi
                 data = append(data, kPressure, dif_ff&0x3, "", val, -3 + (vif_uam & 0x3));
             } else if ((vif_uam & 0xFE) == 0x6C) {
                 // E110 110n	Time Point	n = 0 date, n = 1 time & date
+                if(vif_uam & 1) {
+                    second = b[0] & 0x3F;
+                    minute = b[1] & 0x3F;
+                    hour = b[2] & 0x1F;
+                    day = b[3] & 0x1F;
+                    month = b[4] & 0xF;
+                    year = (b[3] >> 5) | (b[4] >> 4);
+//                    fprintf(stderr, "timedate: %d/%d/%d %d:%02d:%02d\n", 2000+year, month, day, hour, minute, second);
+                } else {
+                    day = b[0] & 0x1F;
+                    month = b[1] & 0xF;
+                    year = (b[0] >> 5) | (b[1] >> 4);
+//                    fprintf(stderr, "date: %d/%d/%d\n", 2000+year, month, day);
+                }
 
             } else if (vif_uam == 0x6E) {
                 // E110 1110	Units for H.C.A.	 	dimensionless
