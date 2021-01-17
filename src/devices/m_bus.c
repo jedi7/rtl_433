@@ -198,30 +198,30 @@ static char* oms_hum_el[4][4] = {
 {"Error 31","Error 32","Error 33","Error 34",}
 };
 
-static char* history_hours[4] = {
-"1h", "24h", "err[2]", "err[3]",
+static char *history_hours[4] = {
+        "1h", "24h", "err[2]", "err[3]",
 };
 
-static char* history_months[12][2] = {
-{"m1", "of month -1"},
-{"m2", "of month -2"},
-{"m3", "of month -3"},
-{"m4", "of month -4"},
-{"m5", "of month -5"},
-{"m6", "of month -6"},
-{"m7", "of month -7"},
-{"m8", "of month -8"},
-{"m9", "of month -9"},
-{"m10", "of month -10"},
-{"m11", "of month -11"},
-{"m12", "of month -12"},
+static char *history_months[12][2] = {
+        {"m1", "of month -1"},
+        {"m2", "of month -2"},
+        {"m3", "of month -3"},
+        {"m4", "of month -4"},
+        {"m5", "of month -5"},
+        {"m6", "of month -6"},
+        {"m7", "of month -7"},
+        {"m8", "of month -8"},
+        {"m9", "of month -9"},
+        {"m10", "of month -10"},
+        {"m11", "of month -11"},
+        {"m12", "of month -12"},
 };
 
-static char* value_types_tab[4][2] = {
-    {"inst", ""},
-    {"max", "Max"},
-    {"min", "Min"},
-    {"err", "Err"},
+static char *value_types_tab[4][2] = {
+        {"inst", ""},
+        {"max", "Max"},
+        {"min", "Min"},
+        {"err", "Err"},
 };
 
 enum UnitType {
@@ -244,22 +244,22 @@ enum UnitType {
     kDate,
 };
 
-static char* unit_names[][3] = {
-/* 0 */ {"energy_wh", "Energy", "Wh"},
-/* 1 */ {"energy_j", "Energy", "J"},
-/* 2 */ {"volume", "Volume", "m3"},
-/* 3 */ {"mass", "Mass", "kg"},
-/* 4 */ {"power_w", "Power", "W"},
-/* 5 */ {"power_jh", "Power", "J/h"},
-/* 6 */ {"volume_flow_h", "Volume flow", "m3/h"},
-/* 7 */ {"volume_flow_min", "Volume flow", "m3/min"},
-/* 8 */ {"volume_flow_s", "Volume flow", "l/s"},
-/* 9 */ {"mass_flow", "Mass flow", "kg/h"},
-/*10 */ {"temperature_flow", "Flow temperature", "C"},
-/*11 */ {"temperature_return", "Return temperature", "C"},
-/*12 */ {"temperature_diff", "Temperature diff", "K"},
-/*13 */ {"temperature_ext", "Temperature extern", "C"},
-/*14 */ {"pressure", "Pressure", "bar"},
+static char *unit_names[][3] = {
+        /* 0 */ {"energy_wh", "Energy", "Wh"},
+        /* 1 */ {"energy_j", "Energy", "J"},
+        /* 2 */ {"volume", "Volume", "m3"},
+        /* 3 */ {"mass", "Mass", "kg"},
+        /* 4 */ {"power_w", "Power", "W"},
+        /* 5 */ {"power_jh", "Power", "J/h"},
+        /* 6 */ {"volume_flow_h", "Volume flow", "m3/h"},
+        /* 7 */ {"volume_flow_min", "Volume flow", "m3/min"},
+        /* 8 */ {"volume_flow_s", "Volume flow", "l/s"},
+        /* 9 */ {"mass_flow", "Mass flow", "kg/h"},
+        /*10 */ {"temperature_flow", "Flow temperature", "C"},
+        /*11 */ {"temperature_return", "Return temperature", "C"},
+        /*12 */ {"temperature_diff", "Temperature diff", "K"},
+        /*13 */ {"temperature_ext", "Temperature extern", "C"},
+        /*14 */ {"pressure", "Pressure", "bar"},
 /*15 */ {"timedate", "TimeDate", ""},
 /*16 */ {"date", "Date", ""},
 };
@@ -293,7 +293,7 @@ static data_t* append(data_t *data, enum UnitType unit_type, uint8_t value_type,
 
 static data_t* append_val(data_t *data, enum UnitType unit_type, uint8_t value_type, uint8_t sn, const char* extra, int32_t val, int exp)
 {
-    const char* prefix = "";
+    const char *prefix = "";
 
     if (exp < -6) {
         exp += 6;
@@ -440,10 +440,10 @@ static int m_bus_decode_records(data_t *data, const uint8_t *b, uint8_t dif_codi
             if ((vif_uam & 0xF8) == 0) {
                 // E000 0nnn Energy	10nnn-3 Wh	0.001Wh to 10000Wh
                 data = append_val(data, kEnergy_Wh, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x7));
-            } else if ((vif_uam & 0xF8) == 0x08) {
+            } else if ((vif_uam&0xF8) == 0x08) {
                 // E000 1nnn	Energy	10nnn J	0.001kJ to 10000kJ
                 data = append_val(data, kEnergy_J, dif_ff, dif_sn, "", val, vif_uam & 0x7);
-            } else if ((vif_uam & 0xF8) == 0x10) {
+            } else if ((vif_uam&0xF8) == 0x10) {
                 // E001 0nnn	Volume	10nnn-6 m3	0.001l to 10000l
 
                 if (dif_sn == 0) {
@@ -454,51 +454,51 @@ static int m_bus_decode_records(data_t *data, const uint8_t *b, uint8_t dif_codi
                     data = append_val(data, kVolume, dif_ff, dif_sn, history_months[dif_sn][1], val, -6 + (vif_uam & 0x7));
                 }
 
-            } else if ((vif_uam & 0xF8) == 0x18) {
+            } else if ((vif_uam&0xF8) == 0x18) {
                 // E001 1nnn	Mass	10nnn-3 kg	0.001kg to 10000kg
                 data = append_val(data, kEnergy_J, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x7));
-            } else if ((vif_uam & 0xFC) == 0x20) {
+            } else if ((vif_uam&0xFC) == 0x20) {
                 /* E010 00nn	On Time	nn = 00 seconds
                                         nn = 01 minutes
                                         nn = 10 hours
                                         nn = 11 days */
-            } else if ((vif_uam & 0xFC) == 0x24) {
+            } else if ((vif_uam&0xFC) == 0x24) {
                 // E010 01nn	Operating Time	coded like OnTime
-            } else if ((vif_uam & 0xF8) == 0x28) {
+            } else if ((vif_uam&0xF8) == 0x28) {
                 // E010 1nnn	Power	10nnn-3 W	0.001W to 10000W
                 data = append_val(data, kPower_W, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x7));
-            } else if ((vif_uam & 0xF8) == 0x30) {
+            } else if ((vif_uam&0xF8) == 0x30) {
                 // E011 0nnn	Power	10nnn J/h	0.001kJ/h to 10000kJ/h
                 data = append_val(data, kPower_Jh, dif_ff, dif_sn, "", val, vif_uam & 0x7);
-            } else if ((vif_uam & 0xF8) == 0x38) {
+            } else if ((vif_uam&0xF8) == 0x38) {
                 // E011 1nnn	Volume Flow	10nnn-6 m3/h	0.001l/h to 10000l/h
                 data = append_val(data, kVolumeFlow_h, dif_ff, dif_sn, "", val, -6 + (vif_uam & 0x7));
-            } else if ((vif_uam & 0xF8) == 0x40) {
+            } else if ((vif_uam&0xF8) == 0x40) {
                 // E100 0nnn	Volume Flow ext.	10nnn-7 m3/min	0.0001l/min to 1000l/min
                 data = append_val(data, kVolumeFlow_min, dif_ff, dif_sn, "", val, -7 + (vif_uam & 0x7));
-            } else if ((vif_uam & 0xF8) == 0x48) {
+            } else if ((vif_uam&0xF8) == 0x48) {
                 // E100 1nnn	Volume Flow ext.	10nnn-9 m³/s	0.001ml/s to 10000ml/s
                 // in litres so exp -3
                 data = append_val(data, kVolumeFlow_s, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x7));
-            } else if ((vif_uam & 0xF8) == 0x50) {
+            } else if ((vif_uam&0xF8) == 0x50) {
                 // E101 0nnn	Mass flow	10nnn-3 kg/h	0.001kg/h to 10000kg/h
                 data = append_val(data, kMassFlow, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x7));
-            } else if ((vif_uam & 0xFC) == 0x58) {
+            } else if ((vif_uam&0xFC) == 0x58) {
                 // E101 10nn	Flow Temperature 10nn-3 °C	0.001°C to 1°C
                 data = append_val(data, kTemperatureFlow, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x3));
-            } else if ((vif_uam & 0xFC) == 0x5C) {
+            } else if ((vif_uam&0xFC) == 0x5C) {
                 // E101 11nn	Return Temperature 10nn-3 °C	0.001°C to 1°C
                 data = append_val(data, kTemperatureReturn, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x3));
-            } else if ((vif_uam & 0xFC) == 0x60) {
+            } else if ((vif_uam&0xFC) == 0x60) {
                 // E110 00nn	Temperature Difference	10nn-3 K	1mK to 1000mK
                 data = append_val(data, kTemperatureDiff, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x3));
-            } else if ((vif_uam & 0xFC) == 0x64) {
+            } else if ((vif_uam&0xFC) == 0x64) {
                 // E110 01nn	External temperature	10 nn-3 ° C	0.001 ° C to 1 ° C
                 data = append_val(data, kTemperatureExtern, dif_ff, dif_sn, history_hours[dif_sn&0x3], val, -3 + (vif_uam & 0x3));
-            } else if ((vif_uam & 0xFC) == 0x68) {
+            } else if ((vif_uam&0xFC) == 0x68) {
                 // E110 10nn	Pressure	10nn-3 bar	1mbar to 1000mbar
                 data = append_val(data, kPressure, dif_ff, dif_sn, "", val, -3 + (vif_uam & 0x3));
-            } else if ((vif_uam & 0xFE) == 0x6C) {
+            } else if ((vif_uam&0xFE) == 0x6C) {
                 // E110 110n	Time Point	n = 0 date, n = 1 time & date
                 if(vif_uam & 1) {
                     m_bus_tm_decode(&timedate, b, dif_coding);
@@ -513,9 +513,9 @@ static int m_bus_decode_records(data_t *data, const uint8_t *b, uint8_t dif_codi
 
             } else if (vif_uam == 0x6E) {
                 // E110 1110	Units for H.C.A.	 	dimensionless
-            } else if ((vif_uam & 0xFC) == 0x70) {
+            } else if ((vif_uam&0xFC) == 0x70) {
                 // E111 00nn	Averaging Duration	coded like OnTime
-            } else if ((vif_uam & 0xFC) == 0x74) {
+            } else if ((vif_uam&0xFC) == 0x74) {
                 // E111 01nn	Actuality Duration	coded like OnTime
             } else if (vif_uam == 0x78) {
                 // E111 1000	Fabrication No
